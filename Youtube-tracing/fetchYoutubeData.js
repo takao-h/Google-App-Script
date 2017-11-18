@@ -21,8 +21,6 @@ function fetchYoutubeData(){
   var likeRate = data.items[0].statistics.likeCount/data.items[0].statistics.viewCount*100;
   var commentRate = data.items[0].statistics.commentCount/data.items[0].statistics.viewCount*100;
   sheet.appendRow([currentdate(), data.items[0].statistics.viewCount, data.items[0].statistics.likeCount, data.items[0].statistics.commentCount, likeRate + "%", commentRate + "%"]);
-
-  Logger.log();
 }
   //日付データ
  function currentdate() {
