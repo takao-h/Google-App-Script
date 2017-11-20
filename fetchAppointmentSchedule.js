@@ -16,6 +16,7 @@ function fetchAppointmentSchedules() {
   // get Event
   var schedules = calender.getEventsForDay(new Date());
 
+ //カウント
   var count = 0;
 
   for(var index = 0; index < schedules.length; index++) {
