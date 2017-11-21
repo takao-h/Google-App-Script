@@ -32,3 +32,12 @@ function fetchAppointmentSchedules() {
   sheet.getRange(range, 2).setValue(count);
 
 }
+
+// 「マイカレンダー」、「他のカレンダー」から名称で検索して取得するサンプルスクリプト 取得したい名前に変更する
+
+function onOpen() {
+  var calendars = CalendarApp.getCalendarsByName('日本の祝日');
+  if (calendars.length > 0){
+    Browser.msgBox(calendars[0].getId());
+  }
+}
