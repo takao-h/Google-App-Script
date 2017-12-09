@@ -26,3 +26,11 @@ function lastBusinessDay() {
   }
   return lastDayOfThisMonth;
 }
+
+function isHoliday(day) {
+  var startDate = new Date(day.setHours(0, 0, 0, 0));
+  var endDate = new Date(day.setHours(23, 59, 59));
+  var cal = CalendarApp.getCalendarById("ja.japanese#holiday@group.v.calendar.google.com");
+  var holidays =  cal.getEvents(startDate, endDate);
+  return holidays.length != 0; // 祝日ならtrue
+}
