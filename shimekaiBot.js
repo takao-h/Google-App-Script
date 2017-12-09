@@ -1,23 +1,70 @@
-var slackAccessToken = "";
-function slackBot() {
-  var slackApp = SlackApp.create(slackAccessToken);
-  var channelId = "#dev"
-  var endDay =
-  var message = "@here みなさんお疲れ様です。今月の締会は${endDay}です。お店の予約をとりますので、欠席の方は今週中に私までご連絡ください。以上よろしくお願いいたします！"
-    var options = {
-    // 投稿するユーザーの名前
-    username: "hayashi_takao"
+function setTriggerDay()
+{
+  var last = lastBusinessDay();
+  ScriptApp.newTrigger("setTriggerHoursLast")
+    .timeBased()
+    .atDate(last.getFullYear(), last.getMonth()+1, last.getDate())
+    .create();
+}
+
+function setTriggerHoursLast()
+{
+  deleteTrigger("setTriggerHoursLast");
+  ScriptApp.newTrigger("sendSlack")
+    .timeBased()
+    .after( 18 * 60 * 60 * 1000 )
+    .create();
+}
+
+function sendSlack()
+{
+  deleteTrigger("sendSlack");
+  var options =
+  {
+    "method" : "POST",
+    "payload" :
+    {
+      "token": "********************",
+      "channel": "bot-test",
+      "text": "@here お疲れ様です。今月の締め会の出欠をとります。欠席の方はできれば今週中に私にご連絡ください。よろしくお願い申し上げます。"
+    }
   }
-  slackApp.postMessage(channelId, message, options);
-  // 毎月15日12:00に締め会の連絡をする
+  var url = "https://slack.com/api/chat.postMessage"
+  UrlFetchApp.fetch(url, options);
+}
 
+function lastBusinessDay()
+{
+  var today = new Date();
 
+  var lastDayOfThisMonth = new Date(today.getFullYear(), today.getMonth()+1, 0);
+  var day; // 0->日曜日
 
-  //今日の日付、時間を取得する
-   var today = new Date();
+  for (var i = 0; i < 30; i++) {
+    day = lastDayOfThisMonth.getDay();
+    if (day == 0 || day == 6 || isHoliday(lastDayOfThisMonth)) {
+      lastDayOfThisMonth = new Date(today.getFullYear(), today.getMonth()+1, -1 * i);
+      continue;
+    }
+  }
+  return lastDayOfThisMonth;
+}
 
-  //その月の平日の最終週を取得する
+function deleteTrigger(name)
+{
+  var triggers = ScriptApp.getProjectTriggers();
+  for(var i=0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() == name) {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+}
 
-  //post
-
+function isHoliday(day)
+{
+  var startDate = new Date(day.setHours(0, 0, 0, 0));
+  var endDate = new Date(day.setHours(23, 59, 59));
+  var cal = CalendarApp.getCalendarById("ja.japanese#holiday@group.v.calendar.google.com");
+  var holidays =  cal.getEvents(startDate, endDate);
+  return holidays.length != 0; // 祝日ならtrue
 }
