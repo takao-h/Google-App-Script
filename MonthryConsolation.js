@@ -1,13 +1,13 @@
 // 毎月15日に登録されているdevの人のカレンダーに締め会の予約を入れる
 
 // イベントを作成
-function createEvent(){
+function createEvent() {
   var calendar = CalendarApp.getCalendarById('xxxxxxxxxx@group.calendar.google.com');
   calendar.createEvent('締め会',
                        new Date('2012/3/12 20:00:00'),
                        new Date('2012/3/12 23:00:00'),
                        {description: '概要',
-                        location: '◯◯病院',
+                        location: 'hogehoge',
                         guests:'hogehoge@gmail.com'}
                       );
 }
