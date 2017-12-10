@@ -3,9 +3,14 @@
 // イベントを作成
 function createEvent() {
   var calendar = CalendarApp.getCalendarById('xxxxxxxxxx@group.calendar.google.com');
+  var today = new Date();
+  var lastDayOfThisMonth = new Date(today.getFullYear(), today.getMonth()+1, 0);
+  var day = lastDayOfThisMonth.getDay();
+  var startTime = new Date(today.setHours(20, 0, 0));
+  var endTime = new Date(day.setHours(23, 0, 0));
   calendar.createEvent('締め会',
-                       new Date('2012/3/12 20:00:00'),
-                       new Date('2012/3/12 23:00:00'),
+                       lastBusinessDay(startTime),
+                       lastBusinessDay(endTime),
                        {description: '概要',
                         location: 'hogehoge',
                         guests:'hogehoge@gmail.com'}
@@ -13,14 +18,14 @@ function createEvent() {
 }
 
 // 最終営業日取得
-function lastBusinessDay() {
+function lastBusinessDay(time) {
   var today = new Date();
   var lastDayOfThisMonth = new Date(today.getFullYear(), today.getMonth()+1, 0);
   var day; // 0->日曜日
   for (var i = 0; i < 30; i++) {
     day = lastDayOfThisMonth.getDay();
     if (day == 0 || day == 6 || isHoliday(lastDayOfThisMonth)) {
-      lastDayOfThisMonth = new Date(today.getFullYear(), today.getMonth()+1, -1 * i);
+      lastDayOfThisMonth = new Date(today.getFullYear(), today.getMonth()+1, -1 * i, day.setHours(time));
       continue;
     }
   }
